@@ -2,44 +2,56 @@ from Crypto.Cipher import AES
 from Crypto.Random import get_random_bytes
 from tkinter import *
 from tkinter import ttk,messagebox,Tk
+from tkinter.scrolledtext import ScrolledText
 
+
+# Генерация ключа
 def generate_key():
     global key
     key = get_random_bytes(32)
     key_entry.delete(0, END)
     key_entry.insert(0, key.hex())
-    
-    
-
-
+    root.clipboard_append(key_entry.get())
+    messagebox.showinfo("Успех", "Ключ скопирован")
 # Шифрование
-def encrypt_decrypt():
+def encrypt():
     try:
-        cipher = AES.new(key, AES.MODE_EAX)
-        global cliphertext
-        ciphertext, tag = cipher.encrypt_and_digest(data)
+        global data
         global nonce # Сохраните nonce для дешифрования
+        global ciphertext
+        global tag
+        data = st.get('1.0',END).encode('utf-8')
+        cipher = AES.new(key, AES.MODE_EAX)
+        ciphertext, tag = cipher.encrypt_and_digest(data)
         nonce = cipher.nonce
         encrypt_entry.delete(0,END)
         encrypt_entry.insert(0,ciphertext)
-
-
-        cipher = AES.new(key, AES.MODE_EAX, nonce)
-        decrypted = cipher.decrypt_and_verify(ciphertext, tag)
-        print("Расшифровано:", decrypted.decode('utf-8'))
+        print(ciphertext)
     except TypeError:
         pass
-        
 
 # Дешифрование
-# print("Расшифровано:", decrypted.decode('utf-8'))
-# print('Key', key)
+def decrypt():
+    cipher = AES.new(key, AES.MODE_EAX, nonce)
+    decrypted = cipher.decrypt_and_verify(ciphertext, tag)
+    print("Расшифровано:", decrypted.decode('utf-8'))
 
-# Генерация ключа (32 байта для AES-256)
+# новое шифрование
+def New():
+    key_entry.delete(0, END)
+    encrypt_entry.delete(0,END)
+
+def Save():
+    f = open('encrypt.txt', 'w')
+    with open('encrypt.txt', 'w') as file:
+        file.write(f'Зашифрованный текст:{encrypt_entry.get()}')
+    f.close()
+# Ключ 
 key = None
 # Данные для шифрования (строку преобразуем в байты)
-data = "Привет, мир!".encode('utf-8')
-
+data = None
+ciphertext = None
+tag = None
 
 
 
@@ -51,21 +63,21 @@ root["bg"] = "#479E92"
 root.title("Шифровальщик AES")
 root.geometry("1050x550")
 
+st = ScrolledText(root, width=50,  height=10)
+st.pack(fill=BOTH, side=LEFT, expand=True)
+
+
+
 main_menu = Menu()
 main_menu["bg"] = "#5A858E"
 file_menu = Menu()
-file_menu.add_command(label="New")
-file_menu.add_command(label="Save")
+file_menu.add_command(label="New",command=New)
+file_menu.add_command(label="Save",command=Save)
 file_menu.add_command(label="Open")
 file_menu.add_separator()
 file_menu.add_command(label="Exit")
  
-main_menu.add_cascade(label="File", menu=file_menu)
-
- 
-
-
-
+main_menu.add_cascade(label="Menu", menu=file_menu)
 
 
 label1 = ttk.Label(root,text="КЛЮЧ", width=200,font=("Arial","20","bold"),anchor='center',background="#95E4C1")
@@ -86,7 +98,7 @@ label2.pack(padx=7,pady=7,anchor=S)
 encrypt_entry = ttk.Entry(root, width=100,font=("font/Verdana.ttf",12))
 encrypt_entry.pack(padx=8,pady=8,anchor=S)
 # кнопка шифрование текста
-encrypt_button = ttk.Button(root,text = "Шифровать",command=encrypt_decrypt)
+encrypt_button = ttk.Button(root,text = "Шифровать",command=encrypt)
 encrypt_button.pack(padx=9,pady=9,anchor=S)
 
 
