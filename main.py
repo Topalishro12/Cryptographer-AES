@@ -7,6 +7,17 @@ from tkinter import *
 from tkinter import ttk,messagebox,Tk,filedialog
 from tkinter.scrolledtext import ScrolledText
 
+"""ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ"""
+key = None # Ключ
+ciphertext = None # Зашифрованный текст
+tag = None # тег для проверки
+nonce = None
+data = None # Данные для шифрования (строку преобразуем в байты)
+data_to_save = None
+key1 = None
+ciphertext1 = None
+nonce1 = None
+tag1 = None
 
 # Генерация ключа
 def generate_key():
@@ -109,18 +120,7 @@ def Save():
     else:
         messagebox.showerror('Отмена','Cохранение отменено')
 
-key = None # Ключ
-ciphertext = None # Зашифрованный текст
-tag = None # тег для проверки
-nonce = None
-data = None # Данные для шифрования (строку преобразуем в байты)
-data_to_save = None
-key1 = None
-ciphertext1 = None
-nonce1 = None
-tag1 = None
-
-# настройки
+# настройки и создание окна Tkinter
 root = Tk()
 root.title("Шифровальщик AES")
 root.geometry("1050x550")
@@ -158,7 +158,7 @@ st.insert(tk.INSERT,'Пишите тут свой текст для шифров
 st.pack(fill=BOTH, side=LEFT, expand=True)
 
 
-
+# Меню
 main_menu = Menu(frame1)
 main_menu["bg"] = "#5A858E"
 file_menu = Menu()
@@ -173,7 +173,6 @@ root.config(menu=main_menu)
 # Текст - КЛЮЧ
 label1 = ttk.Label(frame1,text="КЛЮЧ", width=200,font=("Arial","20","bold"),anchor='center',background="#95E4C1")
 label1.pack()
-
 
 # поле с ключом
 key_entry = ttk.Entry(frame1, width =100, font=("Arial", 12 )) 
@@ -208,17 +207,23 @@ label4.pack(padx=12,pady=12,anchor=S)
 nonce_entry = ttk.Entry(frame1,width=100,font=("Arial",12))
 nonce_entry.pack(padx=13,pady=13,anchor=S)
 
+
+
+
+
+
 # Группа виджетов привязаны к 2 фрейму
 # создаю поле текста со скроллом
 st1 = ScrolledText(frame2, width=50,  height=10)
 st1.insert(tk.INSERT,'Тут будет расшифрованный текст')
 st1.pack(fill=BOTH, side=LEFT, expand=True)
 
+# по приколу добавляю изображение
 img = PhotoImage(file='img/eldritch.png')
 c = Canvas(frame2,width=400, height=400,bg="#479E92",highlightthickness=0, borderwidth=0)
 c.create_image(1, 1, anchor=NW, image=img)
 c.pack()
-
+# кнопка расшифровать
 decrypted_btn = ttk.Button(frame2,text='Расшифровать',width=50,command=decrypt)
 decrypted_btn.pack()
 
