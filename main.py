@@ -79,8 +79,8 @@ def decrypt():
             decrypted = cipher.decrypt_and_verify(ciphertext1, tag1)
             st1.delete("1.0", END)  # Если st1 — текстовый виджет
             st1.insert("1.0", decrypted.decode('utf-8'))
-        except Exception as e:
-            messagebox.showerror('Ошибка',e)
+        except Exception:
+            messagebox.showerror('Ошибка',"Некорректный файл")
     else:
         messagebox.showerror('Отмена','Открытие отменено')  
 # новое шифрование
@@ -207,25 +207,14 @@ label4.pack(padx=12,pady=12,anchor=S)
 nonce_entry = ttk.Entry(frame1,width=100,font=("Arial",12))
 nonce_entry.pack(padx=13,pady=13,anchor=S)
 
-
-
-
-
-
 # Группа виджетов привязаны к 2 фрейму
 # создаю поле текста со скроллом
 st1 = ScrolledText(frame2, width=50,  height=10)
 st1.insert(tk.INSERT,'Тут будет расшифрованный текст')
 st1.pack(fill=BOTH, side=LEFT, expand=True)
 
-# по приколу добавляю изображение
-img = PhotoImage(file='img/eldritch.png')
-c = Canvas(frame2,width=400, height=400,bg="#479E92",highlightthickness=0, borderwidth=0)
-c.create_image(1, 1, anchor=NW, image=img)
-c.pack()
 # кнопка расшифровать
 decrypted_btn = ttk.Button(frame2,text='Расшифровать',width=50,command=decrypt)
 decrypted_btn.pack()
-
 
 root.mainloop()
